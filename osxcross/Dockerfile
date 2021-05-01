@@ -15,28 +15,20 @@ RUN apt-get update -qq && apt-get install -y cmake \
 			libxml2-dev \
 			libssl-dev \
 			zlib1g-dev \
-			xz-utils
-
+			xz-utils \
+			clang
 
 # clone osxcross repo
-WORKDIR /usr
-RUN git clone ${OSXCROSS_GIT}
-
-# get osx's sdk and put it on tarball forlder
-WORKDIR /usr/osxcross/tarballs
-RUN wget ${OSX_SDK_LINK}
+RUN git clone ${OSXCROSS_GIT} /usr/osxcross
+RUN wget -P /usr/osxcross/tarballs ${OSX_SDK_LINK}
 
 # osxcross dependencies building
 WORKDIR /usr/osxcross
 RUN ./tools/get_dependencies.sh
-RUN UNATTENDED=yes INSTALLPREFIX=/opt/clang ./build_clang.sh \
-	&& cd /usr/osxcross/build/llvm-10.0.1.src/build_stage2 \
-	&& make install \
-	&& cd -
 RUN UNATTENDED=yes ./build.sh
 
 FROM debian:latest as artifact
 
 COPY --from=deps /usr/osxcross /usr/osxcross
-COPY --from=deps /opt/clang /opt/clang
-# export PATH=/opt/clang/bin/:$PATH to use binary clang
+
+ENTRYPOINT [ "/bin/bash" ]
