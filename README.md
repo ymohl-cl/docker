@@ -7,7 +7,7 @@ Repository to expose all Dockerfiles
 ## List
 
 - [gosdl2_windows](https://github.com/ymohl-cl/docker/tree/main/gosdl2_windows)
-- [osxcross_clang](https://github.com/ymohl-cl/docker/tree/main/osxcross_clang)
+- [osxcross](https://github.com/ymohl-cl/docker/tree/main/osxcross)
 - [gosdl2](https://github.com/ymohl-cl/docker/tree/main/gosdl2)
 
 ## Contributing
