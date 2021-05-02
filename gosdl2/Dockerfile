@@ -1,8 +1,9 @@
 ARG GO_VERSION=latest
-ARG CLANG_VERSION=12
 
 # Golang image to build crossplatform project with SDL2
 FROM golang:$GO_VERSION as build
+
+ARG CLANG_VERSION=12
 
 # get sdl2 and tooling dependencies need to build go project
 RUN apt-get update -qq && apt-get install -y libsdl2-dev \
@@ -19,18 +20,19 @@ RUN apt-get update -qq && apt-get install -y libsdl2-dev \
 			gnupg2 \
 			software-properties-common
 
-# get windows mandatories files
+# get mandatories files
 COPY --from=ymohlcl/gosdl2_windows:0.0.1 /usr/x86_64-w64-mingw32 /usr/x86_64-w64-mingw32
 COPY --from=ymohlcl/gosdl2_windows:0.0.1 /usr/i686-w64-mingw32 /usr/i686-w64-mingw32
+COPY --from=ymohlcl/osxcross:0.0.1 /usr/osxcross /usr/osxcross
 
-# get osx mandatories files (oscross and clang)
+# get clang / llvm
 WORKDIR /usr/llvm
 RUN wget https://apt.llvm.org/llvm.sh
 RUN chmod +x llvm.sh
 RUN ./llvm.sh ${CLANG_VERSION}
-ENV PATH=/usr/lib/llvm-${CLANG_VERSION}/bin:$PATH
 
-COPY --from=ymohlcl/osxcross:0.0.1 /usr/osxcross /usr/osxcross
+# set binaries in env path
+ENV PATH=/usr/lib/llvm-${CLANG_VERSION}/bin:$PATH
 ENV PATH=$PATH:/usr/osxcross/target/bin
 
 ENTRYPOINT [ "/bin/bash" ]
