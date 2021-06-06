@@ -30,5 +30,3 @@ RUN UNATTENDED=yes ./build.sh
 FROM debian:latest as artifact
 
 COPY --from=deps /usr/osxcross /usr/osxcross
-
-ENTRYPOINT [ "/bin/bash" ]

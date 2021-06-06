@@ -1,7 +1,7 @@
 ARG GO_VERSION=latest
 
 # Golang image to build crossplatform project with SDL2
-FROM golang:$GO_VERSION as build
+FROM golang:$GO_VERSION
 
 ARG CLANG_VERSION=12
 
@@ -35,4 +35,4 @@ RUN ./llvm.sh ${CLANG_VERSION}
 ENV PATH=/usr/lib/llvm-${CLANG_VERSION}/bin:$PATH
 ENV PATH=$PATH:/usr/osxcross/target/bin
 
-ENTRYPOINT [ "/bin/bash" ]
+WORKDIR $GOPATH
